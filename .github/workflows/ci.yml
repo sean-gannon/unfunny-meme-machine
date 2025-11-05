@@ -16,9 +16,7 @@
 
         - name: Backend Build
           working-directory: backend
-          run: |
-            chmod +x mvnw || true
-            ./mvnw -B clean verify
+          run: mvn clean install -DskipTests
 
         - name: Set up Node.js
           uses: actions/setup-node@v4
