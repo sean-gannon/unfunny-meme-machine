@@ -15,13 +15,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "memes")
+@Table(name = "memes", indexes = {@Index(name = "idx_memes_url", columnList = "url")})
 public class Meme {
 
     @Id
@@ -30,6 +31,10 @@ public class Meme {
 
     // filename on disk or key in storage
     private String filename;
+
+    // public URL for the stored image (e.g. S3 presigned URL or CDN path)
+    @Column(name = "url", length = 2000)
+    private String url;
 
     private String title;
 
@@ -73,6 +78,14 @@ public class Meme {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getTitle() {
