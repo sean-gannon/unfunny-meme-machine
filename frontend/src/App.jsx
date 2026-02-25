@@ -91,9 +91,31 @@ export default function App() {
   setSubmissions((s) => [payload, ...s])
     console.log('Submitted:', payload)
 
+    // send labels to backend
+    assigned.forEach((labelId) => {
+      const dto = {
+        memeUrl: currentImage, // frontend uses image path; backend will resolve by url or filename
+        userId: 'anon', // replace with real user id if available
+        emotion: labelId, // mapping label id/text -> emotion/sentiment is up to you; here we store label as emotion
+        sentiment: null,
+      }
+
+      fetch('http://localhost:8080/api/labels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dto),
+      })
+        .then((res) => {
+          if (!res.ok) return res.text().then((t) => Promise.reject(t))
+          return res.json()
+        })
+        .then((data) => console.log('Saved label', data))
+        .catch((err) => console.error('Error saving label', err))
+    })
+
     // move to next image and refresh labels
     setImageIndex((i) => (i + 1) % IMAGES.length)
-  setLabels(sample(POOL, 6))
+   setLabels(sample(POOL, 6))
     setAssigned([])
   }
 
